@@ -1,6 +1,6 @@
 {
   "name": "yandex-praktikum-project-12",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "\u001b[A\u001b[Byandex-praktikum-project-12",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/pavel-sudomoin/yandex-praktikum-project-12/issues"
   },
-  "homepage": "https://github.com/pavel-sudomoin/yandex-praktikum-project-12#readme"
+  "homepage": "https://github.com/pavel-sudomoin/yandex-praktikum-project-12#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1"
+  }
 }
