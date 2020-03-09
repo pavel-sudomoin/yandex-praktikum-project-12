@@ -1,0 +1,19 @@
+{
+  "name": "yandex-praktikum-project-12",
+  "version": "0.0.1",
+  "description": "\u001b[A\u001b[Byandex-praktikum-project-12",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavel-sudomoin/yandex-praktikum-project-12.git"
+  },
+  "author": "Sudomoin Pavel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavel-sudomoin/yandex-praktikum-project-12/issues"
+  },
+  "homepage": "https://github.com/pavel-sudomoin/yandex-praktikum-project-12#readme"
+}
