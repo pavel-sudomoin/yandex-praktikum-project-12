@@ -57,7 +57,8 @@
       "avatar": "https://www.biography.com/.image/t_share/MTE4MDAzNDEwODQwOTQ2MTkw/ada-lovelace-20825279-1-402.jpg",
       "_id": "dbfe53c3c4d568240378b0c6"
   }
-]```
+]
+```
 
 Пример структуры файла *cards.json*:
 
@@ -83,7 +84,8 @@
       },
       "createdAt": "2019-07-06T12:10:29.149Z"
   }
-]```
+]
+```
 
 Это временное решение, оно будет исправлено на дальнейших этапах разработки.
 
