@@ -1,4 +1,5 @@
 const router = require('express').Router();
+
 const users = require('../data/users.json');
 
 const doesUserExist = (req, res, next) => {
