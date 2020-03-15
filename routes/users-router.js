@@ -20,7 +20,7 @@ const sendUsers = (req, res) => {
   res.send(users);
 };
 
-router.get('/users/:id', doesUserExist, sendUser);
-router.get('/users', sendUsers);
+router.get('/:id', doesUserExist, sendUser);
+router.get('/', sendUsers);
 
 module.exports = router;

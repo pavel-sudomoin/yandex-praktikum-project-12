@@ -12,6 +12,6 @@ const app = express();
 app.listen(PORT);
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', cardsRouter);
-app.use('/', usersRouter);
+app.use('/cards', cardsRouter);
+app.use('/users', usersRouter);
 app.use('*', wrongRequestRouter);
