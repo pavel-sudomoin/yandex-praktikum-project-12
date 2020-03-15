@@ -1,0 +1,28 @@
+{
+  "name": "yandex-praktikum-project-12",
+  "version": "1.4.0",
+  "description": "yandex-praktikum-project-12",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavel-sudomoin/yandex-praktikum-project-12.git"
+  },
+  "author": "Sudomoin Pavel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavel-sudomoin/yandex-praktikum-project-12/issues"
+  },
+  "homepage": "https://github.com/pavel-sudomoin/yandex-praktikum-project-12#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
