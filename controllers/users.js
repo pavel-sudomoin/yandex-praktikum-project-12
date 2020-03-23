@@ -2,6 +2,12 @@ const User = require('../models/user');
 
 const isObjectIdValid = require('../validators/object-id-validator');
 
+function updateUser(req, res, id, data) {
+  User.findByIdAndUpdate(id, data, { new: true, runValidators: true, upsert: false })
+    .then((user) => res.send(user))
+    .catch((err) => res.status(500).send({ message: err.message }));
+}
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
@@ -25,6 +31,16 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => res.status(500).send({ message: err.message }));
+};
+
+module.exports.updateUserInfo = (req, res) => {
+  const { name, about } = req.body;
+  updateUser(req, res, req.user._id, { name, about });
+};
+
+module.exports.updateUserAvatar = (req, res) => {
+  const { avatar } = req.body;
+  updateUser(req, res, req.user._id, { avatar });
 };
