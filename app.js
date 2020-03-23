@@ -1,10 +1,11 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
-const cardsRouter = require('./routes/cards-router.js');
+const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
-const wrongRequestRouter = require('./routes/wrong-request-router.js');
+const wrongRequests = require('./routes/wrong-requests.js');
 
 const { PORT = 3000 } = process.env;
 
@@ -18,7 +19,17 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
 });
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5e78758f15969c0cf4636ccb',
+  };
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/cards', cardsRouter);
+app.use('/cards', cards);
 app.use('/users', users);
-app.use('*', wrongRequestRouter);
+app.use('*', wrongRequests);
