@@ -3,7 +3,7 @@ const User = require('../models/user');
 const isObjectIdValid = require('../validators/object-id-validator');
 
 function updateUser(req, res, id, data) {
-  User.findByIdAndUpdate(id, data, { new: true, runValidators: true, upsert: false })
+  User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
     .then((user) => res.send(user))
     .catch((err) => res.status(500).send({ message: err.message }));
 }
