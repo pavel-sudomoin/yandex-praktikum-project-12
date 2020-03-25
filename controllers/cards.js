@@ -14,6 +14,22 @@ async function createCard(req, res) {
   }
 }
 
+function searchResultHandler(res, card) {
+  if (!card) {
+    res.status(404).send({ message: 'Карточки с таким id не существует' });
+  } else {
+    res.send(card);
+  }
+}
+
+module.exports.checkObjectId = (req, res, next) => {
+  if (!isObjectIdValid(req.params.id)) {
+    res.status(404).send({ message: 'Некорректный id карточки' });
+  } else {
+    next();
+  }
+};
+
 module.exports.getCards = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
@@ -22,46 +38,32 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCardById = (req, res) => {
-  if (!isObjectIdValid(req.params.id)) {
-    res.status(404).send({ message: 'Некорректный id карточки' });
-  }
   Card.findByIdAndRemove(req.params.id)
     .populate(['owner', 'likes'])
-    .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: 'Карточки с таким id не существует' });
-      }
-      res.send(card);
-    })
+    .then((card) => searchResultHandler(res, card))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.createCard = createCard;
 
 module.exports.likeCard = (req, res) => {
-  if (!isObjectIdValid(req.params.id)) {
-    res.status(404).send({ message: 'Некорректный id карточки' });
-  }
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .populate(['owner', 'likes'])
-    .then((card) => res.send(card))
+    .then((card) => searchResultHandler(res, card))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.dislikeCard = (req, res) => {
-  if (!isObjectIdValid(req.params.id)) {
-    res.status(404).send({ message: 'Некорректный id карточки' });
-  }
   Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
     .populate(['owner', 'likes'])
-    .then((card) => res.send(card))
+    .then((card) => searchResultHandler(res, card))
     .catch((err) => res.status(500).send({ message: err.message }));
 };

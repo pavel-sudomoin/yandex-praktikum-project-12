@@ -19,12 +19,13 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use((err, req, res, next) => {
+  if (err) res.status(404).send({ message: 'Invalid Request data' });
+  else next();
+});
 
 app.use((req, res, next) => {
-  req.user = {
-    _id: '5e78758f15969c0cf4636ccb',
-  };
+  req.user = { _id: '5e78758f15969c0cf4636ccb' };
   next();
 });
 

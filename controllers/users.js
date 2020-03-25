@@ -2,11 +2,27 @@ const User = require('../models/user');
 
 const isObjectIdValid = require('../validators/object-id-validator');
 
+function searchResultHandler(res, user) {
+  if (!user) {
+    res.status(404).send({ message: 'Пользователя с таким id не существует' });
+  } else {
+    res.send(user);
+  }
+}
+
 function updateUser(req, res, id, data) {
   User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
-    .then((user) => res.send(user))
+    .then((user) => searchResultHandler(res, user))
     .catch((err) => res.status(500).send({ message: err.message }));
 }
+
+module.exports.checkObjectId = (req, res, next) => {
+  if (!isObjectIdValid(req.params.id)) {
+    res.status(404).send({ message: 'Некорректный id пользователя' });
+  } else {
+    next();
+  }
+};
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -15,16 +31,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  if (!isObjectIdValid(req.params.id)) {
-    res.status(404).send({ message: 'Некорректный id пользователя' });
-  }
   User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Пользователя с таким id не существует' });
-      }
-      res.send(user);
-    })
+    .then((user) => searchResultHandler(res, user))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
