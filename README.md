@@ -1,8 +1,8 @@
-﻿# Проектная работа №12 для Yandex.Praktikum
+﻿# Проектная работа №13 для Yandex.Praktikum
 
 ## Версия
 
-Актуальная версия проекта: **v2.0.0**
+Актуальная версия проекта: **v2.1.0**
 
 Ссылка на репозиторий проекта: [https://github.com/pavel-sudomoin/yandex-praktikum-project-12/](https://github.com/pavel-sudomoin/yandex-praktikum-project-12/)
 
