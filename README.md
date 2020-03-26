@@ -43,7 +43,7 @@
   ```json
   {
     "name": "TEST",
-    "about": "TEST",
+    "about": "TEST"
   }
   ```
  
@@ -62,7 +62,7 @@
   ```json
   {
     "name": "Иваново",
-    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
+    "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg"
   }
   ```
 
