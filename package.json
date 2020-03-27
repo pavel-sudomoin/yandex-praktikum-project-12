@@ -1,11 +1,11 @@
 {
   "name": "yandex-praktikum-project-12",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "yandex-praktikum-project-12",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "lint": "eslint **/*.js"
+    "lint": "eslint ./"
   },
   "repository": {
     "type": "git",
