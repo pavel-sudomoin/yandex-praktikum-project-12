@@ -2,7 +2,7 @@
 
 ## Версия
 
-Актуальная версия проекта: **v2.1.0**
+Актуальная версия проекта: **v2.5.0**
 
 Ссылка на репозиторий проекта: [https://github.com/pavel-sudomoin/yandex-praktikum-project-12/](https://github.com/pavel-sudomoin/yandex-praktikum-project-12/)
 
