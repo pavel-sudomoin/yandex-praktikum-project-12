@@ -24,7 +24,7 @@ function searchResultHandler(res, card) {
 
 module.exports.checkObjectId = (req, res, next) => {
   if (!isObjectIdValid(req.params.id)) {
-    res.status(404).send({ message: 'Некорректный id карточки' });
+    res.status(400).send({ message: 'Некорректный id карточки' });
   } else {
     next();
   }

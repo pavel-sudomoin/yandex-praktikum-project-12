@@ -18,7 +18,7 @@ function updateUser(req, res, id, data) {
 
 module.exports.checkObjectId = (req, res, next) => {
   if (!isObjectIdValid(req.params.id)) {
-    res.status(404).send({ message: 'Некорректный id пользователя' });
+    res.status(400).send({ message: 'Некорректный id пользователя' });
   } else {
     next();
   }
