@@ -1,15 +1,14 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const User = require('../models/user');
-
-const isObjectIdValid = require('../validators/object-id-validator');
 
 function searchResultHandler(res, user) {
   if (!user) {
     res.status(404).send({ message: 'Пользователя с таким id не существует' });
   } else {
-    res.send(user);
+    res.status(200).send(user);
   }
 }
 
@@ -18,14 +17,6 @@ function updateUser(req, res, id, data) {
     .then((user) => searchResultHandler(res, user))
     .catch((err) => res.status(500).send({ message: err.message }));
 }
-
-module.exports.checkObjectId = (req, res, next) => {
-  if (!isObjectIdValid(req.params.id)) {
-    res.status(400).send({ message: 'Некорректный id пользователя' });
-  } else {
-    next();
-  }
-};
 
 module.exports.createUser = (req, res) => {
   bcrypt.hash(req.body.password, 10)
@@ -81,5 +72,11 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.id)
     .then((user) => searchResultHandler(res, user))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err instanceof mongoose.Error.CastError) {
+        res.status(400).send({ message: 'Некорректный id пользователя' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
+    });
 };
