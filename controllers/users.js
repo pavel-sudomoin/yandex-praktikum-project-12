@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const User = require('../models/user');
 
 const isObjectIdValid = require('../validators/object-id-validator');
@@ -37,10 +39,23 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => User.create({
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
+      email: req.body.email,
+      password: hash,
+    }))
     .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      res.status(500);
+      if (err.name === 'MongoError' && err.code === 11000) {
+        res.send({ message: 'user validation failed: email: Уже существует пользователь с данным email' });
+      } else {
+        res.send({ message: err.message });
+      }
+    });
 };
 
 module.exports.updateUserInfo = (req, res) => {
