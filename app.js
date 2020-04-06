@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
+const { login, createUser } = require('./controllers/users.js');
 const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
 const wrongRequests = require('./routes/wrong-requests.js');
@@ -37,6 +38,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post('/signin', login);
+app.post('/signup', createUser);
 app.use('/cards', cards);
 app.use('/users', users);
 app.use('*', wrongRequests);

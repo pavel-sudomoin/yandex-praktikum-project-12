@@ -27,18 +27,6 @@ module.exports.checkObjectId = (req, res, next) => {
   }
 };
 
-module.exports.getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => res.status(500).send({ message: err.message }));
-};
-
-module.exports.getUserById = (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => searchResultHandler(res, user))
-    .catch((err) => res.status(500).send({ message: err.message }));
-};
-
 module.exports.createUser = (req, res) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
@@ -59,6 +47,21 @@ module.exports.createUser = (req, res) => {
     });
 };
 
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
+      res
+        .status(200)
+        .cookie('jwt', token, { maxAge: 604800000, httpOnly: true, sameSite: true })
+        .end();
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
   updateUser(req, res, req.user._id, { name, about });
@@ -69,17 +72,14 @@ module.exports.updateUserAvatar = (req, res) => {
   updateUser(req, res, req.user._id, { avatar });
 };
 
-module.exports.login = (req, res) => {
-  const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
-      res
-        .status(200)
-        .cookie('jwt', token, { maxAge: 604800, httpOnly: true, sameSite: true })
-        .end();
-    })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    });
+module.exports.getUsers = (req, res) => {
+  User.find({})
+    .then((users) => res.send(users))
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
+
+module.exports.getUserById = (req, res) => {
+  User.findById(req.params.id)
+    .then((user) => searchResultHandler(res, user))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
