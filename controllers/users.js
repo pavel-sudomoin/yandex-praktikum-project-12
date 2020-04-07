@@ -12,6 +12,14 @@ function searchResultHandler(res, user) {
   }
 }
 
+function searchErrorHandler(res, err) {
+  if (err instanceof mongoose.Error.CastError) {
+    res.status(400).send({ message: 'Некорректный id пользователя' });
+  } else {
+    res.status(500).send({ message: err.message });
+  }
+}
+
 function updateUser(req, res, id, data) {
   User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
     .then((user) => searchResultHandler(res, user))
@@ -27,7 +35,7 @@ module.exports.createUser = (req, res) => {
       email: req.body.email,
       password: hash,
     }))
-    .then((user) => res.send(user))
+    .then((user) => res.status(201).send(user))
     .catch((err) => {
       res.status(500);
       if (err.name === 'MongoError' && err.code === 11000) {
@@ -72,11 +80,5 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.id)
     .then((user) => searchResultHandler(res, user))
-    .catch((err) => {
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Некорректный id пользователя' });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .catch((err) => searchErrorHandler(res, err));
 };
