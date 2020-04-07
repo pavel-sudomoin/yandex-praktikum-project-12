@@ -4,6 +4,13 @@ const mongoose = require('mongoose');
 
 const User = require('../models/user');
 
+function addCookieToResponse(res, user) {
+  const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
+  res
+    .status(200)
+    .cookie('jwt', token, { maxAge: 604800000, httpOnly: true, sameSite: true });
+}
+
 function searchResultHandler(res, user) {
   if (!user) {
     res.status(404).send({ message: 'Пользователя с таким id не существует' });
@@ -35,9 +42,13 @@ module.exports.createUser = (req, res) => {
       email: req.body.email,
       password: hash,
     }))
-    .then((user) => res.status(201).send(user))
+    .then((user) => {
+      addCookieToResponse(res, user);
+      res.send(user);
+    })
     .catch((err) => {
       res.status(500);
+      res.clearCookie('jwt');
       if (err.name === 'MongoError' && err.code === 11000) {
         res.send({ message: 'user validation failed: email: Уже существует пользователь с данным email' });
       } else {
@@ -50,11 +61,8 @@ module.exports.login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
-      res
-        .status(200)
-        .cookie('jwt', token, { maxAge: 604800000, httpOnly: true, sameSite: true })
-        .end();
+      addCookieToResponse(res, user);
+      res.send({ message: 'Вы успешно зарегистрированы' });
     })
     .catch((err) => {
       res.status(401).send({ message: err.message });
