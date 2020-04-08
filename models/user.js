@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    minlength: [8, 'Пароль должен быть не короче 8 символов'],
     select: false,
     required: [true, 'Не указан пароль'],
   },

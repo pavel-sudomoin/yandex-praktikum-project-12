@@ -27,6 +27,16 @@ function searchErrorHandler(res, err) {
   }
 }
 
+function usersPasswordHandler(pass) {
+  if (!pass) {
+    return Promise.reject(new Error('user validation failed: password: Не указан пароль'));
+  }
+  if (pass.length < 8) {
+    return Promise.reject(new Error('user validation failed: password: Пароль должен быть не короче 8 символов'));
+  }
+  return bcrypt.hash(pass, 10);
+}
+
 function updateUser(req, res, id, data) {
   User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
     .then((user) => searchResultHandler(res, user))
@@ -34,7 +44,7 @@ function updateUser(req, res, id, data) {
 }
 
 module.exports.createUser = (req, res) => {
-  bcrypt.hash(req.body.password, 10)
+  usersPasswordHandler(req.body.password)
     .then((hash) => User.create({
       name: req.body.name,
       about: req.body.about,
