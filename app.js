@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 
 const { login, createUser } = require('./controllers/users.js');
 const auth = require('./middlewares/auth.js');
@@ -21,6 +22,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
+
+app.use(helmet());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
