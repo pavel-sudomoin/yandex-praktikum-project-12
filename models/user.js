@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
-const urlValidator = require('../validators/url-validator');
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -19,7 +17,7 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    validate: [urlValidator, 'Некорректная ссылка на аватар'],
+    validate: [validator.isURL, 'Некорректная ссылка на аватар'],
     required: [true, 'Не указана ссылка на аватар'],
   },
   email: {
