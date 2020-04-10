@@ -1,7 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 
+const { login, createUser } = require('./controllers/users.js');
+const auth = require('./middlewares/auth.js');
 const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
 const wrongRequests = require('./routes/wrong-requests.js');
@@ -19,6 +24,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use(helmet());
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', '*');
@@ -32,11 +39,10 @@ app.use((err, req, res, next) => {
   else next();
 });
 
-app.use((req, res, next) => {
-  req.user = { _id: '5e7cf6982d252d19c4b0b4a3' };
-  next();
-});
+app.use(cookieParser());
 
-app.use('/cards', cards);
-app.use('/users', users);
+app.post('/signin', login);
+app.post('/signup', createUser);
+app.use('/cards', auth, cards);
+app.use('/users', auth, users);
 app.use('*', wrongRequests);
