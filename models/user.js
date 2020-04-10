@@ -55,6 +55,7 @@ function showOnlyWhiteListFields(doc, ret) {
     about: ret.about,
     avatar: ret.avatar,
     email: ret.email,
+    _id: ret._id,
   };
   return retJson;
 }

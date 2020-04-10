@@ -72,7 +72,7 @@ module.exports.login = (req, res) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       addCookieToResponse(res, user);
-      res.send({ message: 'Вы успешно зарегистрированы' });
+      res.send({ message: 'Вы успешно авторизованы' });
     })
     .catch((err) => {
       res.status(401).send({ message: err.message });
