@@ -12,3 +12,5 @@ npm-debug.log*
 # Optional REPL history
 *.DS_Store
 *.idea
+
+.env

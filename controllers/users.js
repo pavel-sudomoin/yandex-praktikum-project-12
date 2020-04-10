@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 
 function addCookieToResponse(res, user) {
-  const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_DEV, { expiresIn: '7d' });
   res
     .status(200)
     .cookie('jwt', token, { maxAge: 604800000, httpOnly: true, sameSite: true });

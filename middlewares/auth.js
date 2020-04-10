@@ -6,7 +6,7 @@ module.exports = async (req, res, next) => {
   const token = req.cookies.jwt;
   let payload;
   try {
-    payload = jwt.verify(token, 'key');
+    payload = jwt.verify(token, process.env.JWT_DEV);
     const user = await User.findById(payload._id);
     if (!user) {
       res.clearCookie('jwt');
