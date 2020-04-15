@@ -6,7 +6,6 @@ const User = require('../models/user');
 
 const NotFoundError = require('../errors/not-found-error');
 const BadRequesError = require('../errors/bad-request-error');
-const UnauthorizedError = require('../errors/unauthorized-error');
 
 function addCookieToResponse(res, user) {
   const token = jwt.sign({ _id: user._id }, process.env.JWT_DEV, { expiresIn: '7d' });
@@ -78,7 +77,8 @@ module.exports.login = (req, res, next) => {
       res.status(200).send({ message: 'Вы успешно авторизованы' });
     })
     .catch((err) => {
-      next(new UnauthorizedError(err.message));
+      res.clearCookie('jwt');
+      next(err);
     });
 };
 

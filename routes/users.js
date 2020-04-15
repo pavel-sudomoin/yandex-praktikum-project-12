@@ -7,9 +7,15 @@ const {
   updateUserAvatar,
 } = require('../controllers/users.js');
 
+const {
+  updateUserInfoValidator,
+  updateUserAvatarValidator,
+  idValidator,
+} = require('../validators/celebrate-validators');
+
 router.get('/', getUsers);
-router.get('/:id', getUserById);
-router.patch('/me', updateUserInfo);
-router.patch('/me/avatar', updateUserAvatar);
+router.get('/:id', idValidator, getUserById);
+router.patch('/me', updateUserInfoValidator, updateUserInfo);
+router.patch('/me/avatar', updateUserAvatarValidator, updateUserAvatar);
 
 module.exports = router;

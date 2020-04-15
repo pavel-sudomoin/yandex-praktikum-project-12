@@ -4,8 +4,10 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+// const { errors } = require('celebrate');
 
 const { login, createUser } = require('./controllers/users.js');
+const { loginValidator, createUserValidator } = require('./validators/celebrate-validators');
 const auth = require('./middlewares/auth.js');
 const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
@@ -43,10 +45,12 @@ app.use((err, req, res, next) => {
 
 app.use(cookieParser());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', loginValidator, login);
+app.post('/signup', createUserValidator, createUser);
 app.use('/cards', auth, cards);
 app.use('/users', auth, users);
 app.use('*', wrongRequests);
+
+// app.use(errors());
 
 app.use(errorHandler);

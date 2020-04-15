@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const Card = require('../models/card');
 
-const InternalServerError = require('../errors/internal-server-error');
 const NotFoundError = require('../errors/not-found-error');
 const ForbiddenError = require('../errors/forbidden-error');
 const BadRequesError = require('../errors/bad-request-error');
@@ -31,7 +30,7 @@ module.exports.createCard = async (req, res, next) => {
     card = await card.populate(['owner', 'likes']).execPopulate();
     res.status(201).send(card);
   } catch (err) {
-    next(new InternalServerError(err.message));
+    next(new BadRequesError(err.message));
   }
 };
 
@@ -56,7 +55,7 @@ module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => next(new InternalServerError(err.message)));
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
