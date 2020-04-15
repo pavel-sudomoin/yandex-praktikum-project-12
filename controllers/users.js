@@ -8,7 +8,11 @@ const NotFoundError = require('../errors/not-found-error');
 const BadRequesError = require('../errors/bad-request-error');
 
 function addCookieToResponse(res, user) {
-  const token = jwt.sign({ _id: user._id }, process.env.JWT_DEV, { expiresIn: '7d' });
+  const token = jwt.sign(
+    { _id: user._id },
+    process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : process.env.JWT_DEV,
+    { expiresIn: '7d' },
+  );
   res
     .status(200)
     .cookie('jwt', token, { maxAge: 604800000, httpOnly: true, sameSite: true });
