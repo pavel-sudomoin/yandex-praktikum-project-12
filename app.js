@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
-// const { errors } = require('celebrate');
 
 const { login, createUser } = require('./controllers/users.js');
 const { loginValidator, createUserValidator } = require('./validators/celebrate-validators');
@@ -48,6 +47,11 @@ app.use(cookieParser());
 
 app.use(requestLogger);
 
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.post('/signin', loginValidator, login);
 app.post('/signup', createUserValidator, createUser);
 app.use('/cards', auth, cards);
@@ -55,7 +59,5 @@ app.use('/users', auth, users);
 app.use('*', wrongRequests);
 
 app.use(errorLogger);
-
-// app.use(errors());
 
 app.use(errorHandler);
