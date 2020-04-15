@@ -14,6 +14,7 @@ const users = require('./routes/users.js');
 const wrongRequests = require('./routes/wrong-requests.js');
 const errorHandler = require('./middlewares/error-handler.js');
 const NotFoundError = require('./errors/not-found-error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 
@@ -45,11 +46,15 @@ app.use((err, req, res, next) => {
 
 app.use(cookieParser());
 
+app.use(requestLogger);
+
 app.post('/signin', loginValidator, login);
 app.post('/signup', createUserValidator, createUser);
 app.use('/cards', auth, cards);
 app.use('/users', auth, users);
 app.use('*', wrongRequests);
+
+app.use(errorLogger);
 
 // app.use(errors());
 

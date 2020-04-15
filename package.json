@@ -1,6 +1,6 @@
 {
   "name": "yandex-praktikum-project-12",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "description": "yandex-praktikum-project-12",
   "scripts": {
     "start": "node app.js",
@@ -30,9 +30,11 @@
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-winston": "^4.0.3",
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.5",
-    "validator": "^13.0.0"
+    "validator": "^13.0.0",
+    "winston": "^3.2.1"
   }
 }
