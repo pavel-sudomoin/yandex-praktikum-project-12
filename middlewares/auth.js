@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
+const UnauthorizedError = require('../errors/unauthorized-error');
+
 module.exports = async (req, res, next) => {
   const token = req.cookies.jwt;
   let payload;
@@ -10,11 +12,10 @@ module.exports = async (req, res, next) => {
     const user = await User.findById(payload._id);
     if (!user) {
       res.clearCookie('jwt');
-      throw new Error();
+      throw new UnauthorizedError('Необходима авторизация');
     }
   } catch (err) {
-    res.status(401).send({ message: 'Необходима авторизация' });
-    return;
+    next(err);
   }
   req.user = payload;
   next();
