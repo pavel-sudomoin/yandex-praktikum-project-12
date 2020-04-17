@@ -10,7 +10,7 @@ const BadRequesError = require('../errors/bad-request-error');
 function addCookieToResponse(res, user) {
   const token = jwt.sign(
     { _id: user._id },
-    process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : process.env.JWT_DEV,
+    process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'key',
     { expiresIn: '7d' },
   );
   res
