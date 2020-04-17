@@ -1,6 +1,6 @@
 {
   "name": "yandex-praktikum-project-12",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "description": "yandex-praktikum-project-12",
   "scripts": {
     "start": "node app.js",
