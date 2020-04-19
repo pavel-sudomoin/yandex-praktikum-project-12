@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 
 const { login, createUser } = require('./controllers/users.js');
-const { loginValidator, createUserValidator } = require('./validators/celebrate-validators');
+const { loginValidator, createUserValidator } = require('./validators/validators');
 const auth = require('./middlewares/auth.js');
 const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');

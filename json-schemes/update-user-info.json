@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://sudomoin-pavel-project-mesto.tk/schemas/update-user-info.json",
+  "type": "object",
+  "properties": {
+    "name": { "$ref": "user.json#/properties/name" },
+    "about": { "$ref": "user.json#/properties/about" }
+  },
+  "required": ["name", "about"],
+  "additionalProperties": false
+}

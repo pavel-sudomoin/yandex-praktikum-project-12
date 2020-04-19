@@ -11,7 +11,7 @@ const {
   updateUserInfoValidator,
   updateUserAvatarValidator,
   idValidator,
-} = require('../validators/celebrate-validators');
+} = require('../validators/validators');
 
 router.get('/', getUsers);
 router.get('/:id', idValidator, getUserById);

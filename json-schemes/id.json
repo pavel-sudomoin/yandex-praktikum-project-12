@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://sudomoin-pavel-project-mesto.tk/schemas/id.json",
+  "type": "string",
+  "minLength": 24,
+  "maxLength": 24,
+  "pattern": "^[a-fA-F0-9]*$"
+}

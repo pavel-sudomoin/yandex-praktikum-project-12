@@ -11,7 +11,7 @@ const {
 const {
   createCardValidator,
   idValidator,
-} = require('../validators/celebrate-validators');
+} = require('../validators/validators');
 
 router.get('/', getCards);
 router.post('/', createCardValidator, createCard);

@@ -4,6 +4,8 @@
 
 Актуальная версия проекта: **v6.2.0**
 
+Версия проекта с использованием альтернативного способа валидации данных: **v6.2.1**
+
 ## Репозиторий проекта
 
 Ссылка на репозиторий проекта: [https://github.com/pavel-sudomoin/yandex-praktikum-project-12/](https://github.com/pavel-sudomoin/yandex-praktikum-project-12/)

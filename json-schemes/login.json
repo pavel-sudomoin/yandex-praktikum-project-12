@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://sudomoin-pavel-project-mesto.tk/schemas/login.json",
+  "type": "object",
+  "properties": {
+    "email": { "$ref": "user.json#/properties/email" },
+    "password": { "$ref": "user.json#/properties/password" }
+  },
+  "required": ["email", "password"],
+  "additionalProperties": false
+}
