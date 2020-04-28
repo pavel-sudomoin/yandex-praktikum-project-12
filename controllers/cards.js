@@ -2,23 +2,27 @@ const mongoose = require('mongoose');
 
 const Card = require('../models/card');
 
+const NotFoundError = require('../errors/not-found-error');
+const ForbiddenError = require('../errors/forbidden-error');
+const BadRequesError = require('../errors/bad-request-error');
+
 function searchResultHandler(res, card) {
   if (!card) {
-    res.status(404).send({ message: 'Карточки с таким id не существует' });
+    throw new NotFoundError('Карточки с таким id не существует');
   } else {
     res.status(200).send(card);
   }
 }
 
-function searchErrorHandler(res, err) {
+function searchErrorHandler(res, err, next) {
   if (err instanceof mongoose.Error.CastError) {
-    res.status(400).send({ message: 'Некорректный id карточки' });
+    next(new BadRequesError('Некорректный id карточки'));
   } else {
-    res.status(500).send({ message: err.message });
+    next(err);
   }
 }
 
-module.exports.createCard = async (req, res) => {
+module.exports.createCard = async (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   try {
@@ -26,37 +30,35 @@ module.exports.createCard = async (req, res) => {
     card = await card.populate(['owner', 'likes']).execPopulate();
     res.status(201).send(card);
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    next(new BadRequesError(err.message));
   }
 };
 
-module.exports.deleteCardById = async (req, res) => {
+module.exports.deleteCardById = async (req, res, next) => {
   try {
     let card = await Card.findById(req.params.id);
     if (!card) {
-      res.status(404).send({ message: 'Карточки с таким id не существует' });
-      return;
+      throw new NotFoundError('Карточки с таким id не существует');
     }
     if (card.owner.toString() !== req.user._id) {
-      res.status(403).send({ message: 'Недостаточно прав для удаления данной карточки' });
-      return;
+      throw new ForbiddenError('Недостаточно прав для удаления данной карточки');
     }
     card = await card.remove();
     card = await card.populate(['owner', 'likes']).execPopulate();
     res.status(201).send(card);
   } catch (err) {
-    searchErrorHandler(res, err);
+    searchErrorHandler(res, err, next);
   }
 };
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
@@ -64,10 +66,10 @@ module.exports.likeCard = (req, res) => {
   )
     .populate(['owner', 'likes'])
     .then((card) => searchResultHandler(res, card))
-    .catch((err) => searchErrorHandler(res, err));
+    .catch((err) => searchErrorHandler(res, err, next));
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
@@ -75,5 +77,5 @@ module.exports.dislikeCard = (req, res) => {
   )
     .populate(['owner', 'likes'])
     .then((card) => searchResultHandler(res, card))
-    .catch((err) => searchErrorHandler(res, err));
+    .catch((err) => searchErrorHandler(res, err, next));
 };

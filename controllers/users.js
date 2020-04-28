@@ -4,8 +4,15 @@ const mongoose = require('mongoose');
 
 const User = require('../models/user');
 
+const NotFoundError = require('../errors/not-found-error');
+const BadRequesError = require('../errors/bad-request-error');
+
 function addCookieToResponse(res, user) {
-  const token = jwt.sign({ _id: user._id }, process.env.JWT_DEV, { expiresIn: '7d' });
+  const token = jwt.sign(
+    { _id: user._id },
+    process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'key',
+    { expiresIn: '7d' },
+  );
   res
     .status(200)
     .cookie('jwt', token, { maxAge: 604800000, httpOnly: true, sameSite: true });
@@ -13,37 +20,37 @@ function addCookieToResponse(res, user) {
 
 function searchResultHandler(res, user) {
   if (!user) {
-    res.status(404).send({ message: 'Пользователя с таким id не существует' });
+    throw new NotFoundError('Пользователя с таким id не существует');
   } else {
     res.status(200).send(user);
   }
 }
 
-function searchErrorHandler(res, err) {
+function searchErrorHandler(res, err, next) {
   if (err instanceof mongoose.Error.CastError) {
-    res.status(400).send({ message: 'Некорректный id пользователя' });
+    next(new BadRequesError('Некорректный id пользователя'));
   } else {
-    res.status(500).send({ message: err.message });
+    next(err);
   }
 }
 
 function usersPasswordHandler(pass) {
   if (!pass) {
-    return Promise.reject(new Error('user validation failed: password: Не указан пароль'));
+    throw new BadRequesError('user validation failed: password: Не указан пароль');
   }
   if (pass.length < 8) {
-    return Promise.reject(new Error('user validation failed: password: Пароль должен быть не короче 8 символов'));
+    throw new BadRequesError('user validation failed: password: Пароль должен быть не короче 8 символов');
   }
   return bcrypt.hash(pass, 10);
 }
 
-function updateUser(req, res, id, data) {
+function updateUser(req, res, next, id, data) {
   User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
     .then((user) => searchResultHandler(res, user))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 }
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   usersPasswordHandler(req.body.password)
     .then((hash) => User.create({
       name: req.body.name,
@@ -54,49 +61,49 @@ module.exports.createUser = (req, res) => {
     }))
     .then((user) => {
       addCookieToResponse(res, user);
-      res.send(user);
+      res.status(201).send(user);
     })
     .catch((err) => {
-      res.status(500);
       res.clearCookie('jwt');
       if (err.name === 'MongoError' && err.code === 11000) {
-        res.send({ message: 'user validation failed: email: Уже существует пользователь с данным email' });
+        next(new BadRequesError('user validation failed: email: Уже существует пользователь с данным email'));
       } else {
-        res.send({ message: err.message });
+        next(err);
       }
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
       addCookieToResponse(res, user);
-      res.send({ message: 'Вы успешно авторизованы' });
+      res.status(200).send({ message: 'Вы успешно авторизованы' });
     })
     .catch((err) => {
-      res.status(401).send({ message: err.message });
+      res.clearCookie('jwt');
+      next(err);
     });
 };
 
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
-  updateUser(req, res, req.user._id, { name, about });
+  updateUser(req, res, next, req.user._id, { name, about });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  updateUser(req, res, req.user._id, { avatar });
+  updateUser(req, res, next, req.user._id, { avatar });
 };
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .then((users) => res.status(200).send(users))
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => searchResultHandler(res, user))
-    .catch((err) => searchErrorHandler(res, err));
+    .catch((err) => searchErrorHandler(res, err, next));
 };

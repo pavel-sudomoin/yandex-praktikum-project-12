@@ -8,10 +8,15 @@ const {
   dislikeCard,
 } = require('../controllers/cards.js');
 
+const {
+  createCardValidator,
+  idValidator,
+} = require('../validators/celebrate-validators');
+
 router.get('/', getCards);
-router.post('/', createCard);
-router.delete('/:id', deleteCardById);
-router.put('/:id/likes', likeCard);
-router.delete('/:id/likes', dislikeCard);
+router.post('/', createCardValidator, createCard);
+router.delete('/:id', idValidator, deleteCardById);
+router.put('/:id/likes', idValidator, likeCard);
+router.delete('/:id/likes', idValidator, dislikeCard);
 
 module.exports = router;

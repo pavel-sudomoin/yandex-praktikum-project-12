@@ -6,10 +6,14 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 
 const { login, createUser } = require('./controllers/users.js');
+const { loginValidator, createUserValidator } = require('./validators/celebrate-validators');
 const auth = require('./middlewares/auth.js');
 const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
 const wrongRequests = require('./routes/wrong-requests.js');
+const errorHandler = require('./middlewares/error-handler.js');
+const NotFoundError = require('./errors/not-found-error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 
@@ -35,14 +39,25 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use((err, req, res, next) => {
-  if (err) res.status(404).send({ message: 'Invalid Request data' });
+  if (err) next(new NotFoundError('Invalid Request data'));
   else next();
 });
 
 app.use(cookieParser());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+app.post('/signin', loginValidator, login);
+app.post('/signup', createUserValidator, createUser);
 app.use('/cards', auth, cards);
 app.use('/users', auth, users);
 app.use('*', wrongRequests);
+
+app.use(errorLogger);
+
+app.use(errorHandler);
