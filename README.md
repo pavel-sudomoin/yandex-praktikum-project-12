@@ -14,9 +14,9 @@
 
 К серверу можно обратиться по его IP-адресу, либо по доменному имени.
 
-IP-адрес: [https://sudomoin-pavel-project-mesto.tk/](https://sudomoin-pavel-project-mesto.tk/)
+IP-адрес: <s>[https://sudomoin-pavel-project-mesto.tk/](https://sudomoin-pavel-project-mesto.tk/)</s>
 
-Домен: [http://130.193.45.69/](http://130.193.45.69/)
+Домен: <s>[http://130.193.45.69/](http://130.193.45.69/)</s>
 
 Сервер допускает работу с http и https протоколами.
 
